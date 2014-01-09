@@ -1,0 +1,131 @@
+<% layout('layout') -%>
+<% stylesheet('/css/style.css') -%>
+<% block('header', "Stopwatch") -%>
+<% script('/js/StopWatch.js', 'text/javascript') -%>
+<% script('/js/datebox/jqm-datebox.core.min.js', 'text/javascript') -%>
+<% script('/js/datebox/jqm-datebox.mode.durationbox.min.js', 'text/javascript') -%>
+<input name="mydate" id="mydate" type="text" data-role="datebox" data-options='{"mode": "durationbox"}'>
+<div class="timer_types_container">
+    <input id="timer_type_timer" type="button" title="Timer" data-iconpos="notext" data-role="button" role="button" data-icon="buteyko-timer">
+
+    <a id="timer_type_stopwatch" title="Stopwatch" data-iconpos="notext" data-role="button" data-icon="buteyko-stopwatch" hef="#"></a>
+</div>
+<div id="timer" class="timer_container">
+    <h2>Timer</h2>
+    <div class="timer_container_part" id="minutes">
+       <input type="button" data-role="button" data-icon="plus" data-iconpos="top" data-mini="true" data-action="add">
+       <input type="text" value="0" id="minutes_val" >
+       <input type="button" data-role="button" data-icon="minus" data-iconpos="top" data-mini="true" data-action="substract">
+        <label for="minutes">Minuten</label>
+    </div>
+    <div class="timer_container_part" id="seconds">
+        <input type="button" data-role="button" data-icon="plus" data-iconpos="top" data-mini="true" data-action="add">
+        <input type="text" value="0" id="seconds_val" >
+        <input type="button" data-role="button" data-icon="minus" data-iconpos="top" data-mini="true" data-action="substract">
+        <label for="seconds">Seconden</label>
+    </div>
+    <div class="start_btn_container">
+        <input type="button" id="start_timer" value="Start" class="start_btn">
+    </div>
+</div>
+
+<div id="stopwatch" class="stopwatch_container">
+    <h2>Stopwatch</h2>
+</div>
+<script type="text/javascript">
+   var _stopwatch;
+   var minutes;
+   var seconds;
+
+   Init();
+
+   function Init() {
+        _stopwatch  = new StopWatch();
+        $('a').buttonMarkup({ inline: "true"});
+        GetTime();
+        SetTime();
+   }
+
+   $("#seconds input:button").click(function() {
+       GetTime();
+
+       MeasureSeconds($(this).attr("data-action"));
+
+       SetTime();
+   });
+
+   $("#minutes input:button").click(function() {
+      GetTime();
+
+      MeasureMinutes($(this).attr("data-action"));
+
+      SetTime();
+   });
+
+   $("#start_timer").click(function() {
+
+   });
+
+   $("#timer_type_stopwatch").click(function() {
+          $("#timer").fadeOut();
+          $("#stopwatch").fadeIn();
+
+   });
+
+   $("#timer_type_timer").click(function() {
+        $("#stopwatch").fadeOut();
+        $("#timer").fadeIn();
+   });
+
+
+    function MeasureSeconds(action) {
+         if (action =="add") {
+            if (seconds < 59) {
+                 seconds++;
+            } else {
+                 seconds = 0;
+                 minutes++;
+            }
+         } else {
+             if (seconds > 0) {
+                seconds--;
+             } else if (minutes > 0) {
+                minutes--;
+                seconds = 59;
+             }
+         }
+
+
+    }
+
+    function MeasureMinutes(action) {
+         if (action =="add") {
+            if (minutes < 59) {
+                 minutes++;
+            }
+         } else {
+             if (minutes > 0) {
+                minutes--;
+             }
+         }
+    }
+
+    function GetTime() {
+        seconds = parseInt($("#seconds_val").val(), 10);
+        minutes = parseInt($("#minutes_val").val(), 10);
+    }
+
+    function SetTime() {
+        if (seconds < 10) {
+            seconds = "0" + seconds.toString();
+        }
+
+        if (minutes < 10) {
+            minutes = "0" + minutes.toString();
+        }
+
+        $("#seconds_val").val(seconds);
+        $("#minutes_val").val(minutes);
+    }
+
+</script>
